@@ -22,88 +22,188 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
   void _showFormDialog({Transaksi? item}) {
     final isEdit = item != null;
     final judulController = TextEditingController(text: isEdit ? item.judul : '');
-    final kategoriController = TextEditingController(text: isEdit ? item.kategori : 'Infaq');
     final jumlahController = TextEditingController(text: isEdit ? item.jumlah.toStringAsFixed(0) : '');
+    String kategori = isEdit ? item.kategori : 'Infaq Jamaah';
     bool isPemasukan = isEdit ? item.isPemasukan : true;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, setModalState) => AlertDialog(
-          title: Text(isEdit ? 'Edit Transaksi Kas' : 'Catat Transaksi Kas Baru'),
-          content: SingleChildScrollView(
+        builder: (context, setModalState) => Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: judulController,
-                  decoration: const InputDecoration(labelText: 'Judul Transaksi'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      isEdit ? 'Edit Transaksi Kas' : 'Tambah Transaksi Kas',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
                 ),
-                TextField(
-                  controller: kategoriController,
-                  decoration: const InputDecoration(labelText: 'Kategori (cth: Infaq, Operasional)'),
-                ),
-                TextField(
-                  controller: jumlahController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Nominal (Rp)'),
-                ),
-                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 8),
+                const Text('Jenis Transaksi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Expanded(
-                      child: RadioListTile<bool>(
-                        title: const Text('Masuk'),
-                        value: true,
-                        groupValue: isPemasukan,
-                        onChanged: (v) => setModalState(() => isPemasukan = v!),
+                      child: GestureDetector(
+                        onTap: () => setModalState(() => isPemasukan = true),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isPemasukan ? Colors.teal.shade50 : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isPemasukan ? const Color(0xFF0F766E) : Colors.grey.shade300,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Pemasukan (+)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: isPemasukan ? const Color(0xFF0F766E) : Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
+                    const SizedBox(width: 12),
                     Expanded(
-                      child: RadioListTile<bool>(
-                        title: const Text('Keluar'),
-                        value: false,
-                        groupValue: isPemasukan,
-                        onChanged: (v) => setModalState(() => isPemasukan = v!),
+                      child: GestureDetector(
+                        onTap: () => setModalState(() => isPemasukan = false),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: !isPemasukan ? Colors.red.shade50 : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: !isPemasukan ? Colors.red : Colors.grey.shade300,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Pengeluaran (-)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: !isPemasukan ? Colors.red : Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                const Text('Judul Transaksi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: judulController,
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: Infaq Kotak Jumat',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text('Jumlah (Rp)', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: jumlahController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: '0',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text('Kategori', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade400),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: kategori,
+                      isExpanded: true,
+                      items: ['Infaq Jamaah', 'Operational', 'Donasi Khusus', 'Gaji Marbot']
+                          .map((val) => DropdownMenuItem(value: val, child: Text(val)))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) setModalState(() => kategori = val);
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0F766E),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: () {
+                      if (judulController.text.isEmpty || jumlahController.text.isEmpty) return;
+                      setState(() {
+                        if (isEdit) {
+                          item.judul = judulController.text;
+                          item.kategori = kategori;
+                          item.jumlah = double.tryParse(jumlahController.text) ?? 0;
+                          item.isPemasukan = isPemasukan;
+                        } else {
+                          _list.insert(
+                            0,
+                            Transaksi(
+                              id: DateTime.now().toString(),
+                              judul: judulController.text,
+                              kategori: kategori,
+                              jumlah: double.tryParse(jumlahController.text) ?? 0,
+                              tanggal: DateTime.now(),
+                              isPemasukan: isPemasukan,
+                            ),
+                          );
+                        }
+                      });
+                      Navigator.pop(ctx);
+                      widget.onNotify(isEdit ? 'Transaksi berhasil diperbarui' : 'Transaksi berhasil dicatat');
+                    },
+                    child: const Text('Simpan Transaksi Kas', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                const SizedBox(height: 24),
               ],
             ),
           ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F766E), foregroundColor: Colors.white),
-              onPressed: () {
-                if (judulController.text.isEmpty || jumlahController.text.isEmpty) return;
-                setState(() {
-                  if (isEdit) {
-                    item.judul = judulController.text;
-                    item.kategori = kategoriController.text;
-                    item.jumlah = double.tryParse(jumlahController.text) ?? 0;
-                    item.isPemasukan = isPemasukan;
-                  } else {
-                    _list.insert(
-                      0,
-                      Transaksi(
-                        id: DateTime.now().toString(),
-                        judul: judulController.text,
-                        kategori: kategoriController.text,
-                        jumlah: double.tryParse(jumlahController.text) ?? 0,
-                        tanggal: DateTime.now(),
-                        isPemasukan: isPemasukan,
-                      ),
-                    );
-                  }
-                });
-                Navigator.pop(ctx);
-                widget.onNotify(isEdit ? 'Transaksi berhasil diperbarui' : 'Transaksi berhasil dicatat');
-              },
-              child: const Text('Simpan'),
-            ),
-          ],
         ),
       ),
     );
@@ -128,7 +228,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header Custom SIMMAS[cite: 3]
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               color: const Color(0xFF0F766E),
@@ -159,8 +258,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                 ],
               ),
             ),
-
-            // Card Balance Kas Masjid[cite: 3]
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(20),
@@ -220,8 +317,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                 ],
               ),
             ),
-
-            // Filter Tabs (Semua, Pemasukan, Pengeluaran)[cite: 3]
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -260,7 +355,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 14),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -270,8 +364,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
               ),
             ),
             const SizedBox(height: 8),
-
-            // List Transaksi[cite: 3]
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

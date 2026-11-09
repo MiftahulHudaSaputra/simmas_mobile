@@ -1,11 +1,11 @@
 class TransaksiZakat {
   String id;
-  String nama; // Nama Muzakki atau Mustahik
-  String jenisZakat; // Zakat Fitrah, Zakat Maal, Infaq, dll.
+  String nama;
+  String jenisZakat;
   double jumlahUang;
-  double jumlahBeras; // dalam Kg
+  double jumlahBeras;
   DateTime tanggal;
-  bool isPenerimaan; // true = Terima dari Muzakki, false = Penyaluran ke Mustahik
+  bool isPenerimaan; // true = Terima Zakat, false = Penyaluran Zakat
 
   TransaksiZakat({
     required this.id,

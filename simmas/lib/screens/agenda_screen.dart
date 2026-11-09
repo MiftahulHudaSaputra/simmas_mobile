@@ -21,68 +21,159 @@ class _AgendaScreenState extends State<AgendaScreen> {
     final isEdit = item != null;
     final judulController = TextEditingController(text: isEdit ? item.judul : '');
     final penceramahController = TextEditingController(text: isEdit ? item.penceramah : '');
-    final waktuController = TextEditingController(text: isEdit ? item.waktu : '');
-    final lokasiController = TextEditingController(text: isEdit ? item.lokasi : '');
+    final waktuController = TextEditingController(text: isEdit ? item.waktu : '05:00 WIB');
+    final lokasiController = TextEditingController(text: isEdit ? item.lokasi : 'Ruang Utama Masjid');
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(isEdit ? 'Edit Agenda' : 'Tambah Agenda Baru'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: judulController,
-                decoration: const InputDecoration(labelText: 'Judul Agenda / Kegiatan'),
-              ),
-              TextField(
-                controller: penceramahController,
-                decoration: const InputDecoration(labelText: 'Penceramah / Keterangan'),
-              ),
-              TextField(
-                controller: waktuController,
-                decoration: const InputDecoration(labelText: 'Waktu (Cth: 05:00 WIB)'),
-              ),
-              TextField(
-                controller: lokasiController,
-                decoration: const InputDecoration(labelText: 'Lokasi'),
-              ),
-            ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      isEdit ? 'Edit Agenda Kegiatan' : 'Tambah Agenda Kegiatan',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                const SizedBox(height: 8),
+                const Text('Nama Agenda / Kegiatan', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: judulController,
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: Kajian Subuh Ahad',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Tanggal', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          const SizedBox(height: 6),
+                          TextField(
+                            readOnly: true,
+                            controller: TextEditingController(text: '08 Nov 2026'),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Waktu', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: waktuController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text('Pemateri / PJ / Deskripsi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: penceramahController,
+                  decoration: InputDecoration(
+                    hintText: 'Pemateri / Penanggung Jawab',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text('Lokasi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: lokasiController,
+                  decoration: InputDecoration(
+                    hintText: 'Ruang Utama Masjid',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0F766E),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: () {
+                      if (judulController.text.isEmpty) return;
+                      setState(() {
+                        if (isEdit) {
+                          item.judul = judulController.text;
+                          item.penceramah = penceramahController.text;
+                          item.waktu = waktuController.text;
+                          item.lokasi = lokasiController.text;
+                        } else {
+                          _list.insert(
+                            0,
+                            Agenda(
+                              id: DateTime.now().toString(),
+                              judul: judulController.text,
+                              penceramah: penceramahController.text,
+                              tanggal: DateTime.now(),
+                              waktu: waktuController.text,
+                              lokasi: lokasiController.text,
+                            ),
+                          );
+                        }
+                      });
+                      Navigator.pop(ctx);
+                      widget.onNotify(isEdit ? 'Agenda berhasil diperbarui' : 'Agenda baru ditambahkan');
+                    },
+                    child: const Text('Simpan Agenda Kegiatan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F766E), foregroundColor: Colors.white),
-            onPressed: () {
-              if (judulController.text.isEmpty) return;
-              setState(() {
-                if (isEdit) {
-                  item.judul = judulController.text;
-                  item.penceramah = penceramahController.text;
-                  item.waktu = waktuController.text;
-                  item.lokasi = lokasiController.text;
-                } else {
-                  _list.insert(
-                    0,
-                    Agenda(
-                      id: DateTime.now().toString(),
-                      judul: judulController.text,
-                      penceramah: penceramahController.text,
-                      tanggal: DateTime.now(),
-                      waktu: waktuController.text,
-                      lokasi: lokasiController.text,
-                    ),
-                  );
-                }
-              });
-              Navigator.pop(ctx);
-              widget.onNotify(isEdit ? 'Agenda berhasil diperbarui' : 'Agenda baru ditambahkan');
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
       ),
     );
   }
@@ -100,7 +191,6 @@ class _AgendaScreenState extends State<AgendaScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header SIMMAS[cite: 5]
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               color: const Color(0xFF0F766E),
@@ -131,8 +221,6 @@ class _AgendaScreenState extends State<AgendaScreen> {
                 ],
               ),
             ),
-
-            // Judul Halaman Agenda & Badge[cite: 5]
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -157,8 +245,6 @@ class _AgendaScreenState extends State<AgendaScreen> {
                 ],
               ),
             ),
-
-            // Daftar Agenda[cite: 5]
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

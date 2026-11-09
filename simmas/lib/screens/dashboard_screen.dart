@@ -51,7 +51,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Custom Header Masjid SIMMAS[cite: 2]
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 color: const Color(0xFF0F766E),
@@ -116,8 +115,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-
-              // Banner Selamat Datang[cite: 2]
               Container(
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(20),
@@ -125,59 +122,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: const Color(0xFF0F766E),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Stack(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const Text(
+                      "Assalamu'alaikum Pengurus,",
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      "Selamat Datang di SIMMAS",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
                       children: [
+                        const Icon(Icons.calendar_today, color: Colors.white70, size: 14),
+                        const SizedBox(width: 6),
                         const Text(
-                          "Assalamu'alaikum Pengurus,",
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                          'Sabtu, 7 November 2026',
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          "Selamat Datang di SIMMAS",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.circular(6),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            const Icon(Icons.calendar_today, color: Colors.white70, size: 14),
-                            const SizedBox(width: 6),
-                            const Text(
-                              'Sabtu, 7 November 2026',
-                              style: TextStyle(color: Colors.white70, fontSize: 12),
+                          child: Text(
+                            _currentTimeString,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const Spacer(),
-                            // Real-time Clock pojok kanan bawah
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.black26,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                _currentTimeString,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-
-              // Ringkasan Utama[cite: 2]
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
@@ -281,8 +271,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-
-              // Jadwal Shalat Hari Ini[cite: 2]
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -330,8 +318,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
-
-              // Agenda Terdekat[cite: 2]
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -361,8 +347,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: Colors.teal.shade50,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Column(
-                          children: const [
+                        child: const Column(
+                          children: [
                             Text('08', style: TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.bold, fontSize: 16)),
                             Text('NOV', style: TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.bold, fontSize: 10)),
                           ],

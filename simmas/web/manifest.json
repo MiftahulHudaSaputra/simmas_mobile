@@ -1,6 +1,6 @@
 {
-    "name": "simmas",
-    "short_name": "simmas",
+    "name": "flutter_simmas",
+    "short_name": "flutter_simmas",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

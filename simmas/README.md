@@ -1,4 +1,4 @@
-# simmas
+# flutter_simmas
 
 A new Flutter project.
 
